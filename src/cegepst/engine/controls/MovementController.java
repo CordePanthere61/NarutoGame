@@ -4,13 +4,11 @@ import java.awt.event.KeyEvent;
 
 public class MovementController extends Controller {
 
-    private int upKey = KeyEvent.VK_UP;
-    private int downKey = KeyEvent.VK_DOWN;
     private int rightKey = KeyEvent.VK_RIGHT;
     private int leftKey = KeyEvent.VK_LEFT;
 
     public MovementController() {
-        int[] pressedKeys = {upKey, downKey, rightKey, leftKey};
+        int[] pressedKeys = {rightKey, leftKey};
         bindKeys(pressedKeys);
     }
 
@@ -22,29 +20,8 @@ public class MovementController extends Controller {
         return super.isKeyPressed(rightKey);
     }
 
-    public boolean isUpPressed() {
-        return super.isKeyPressed(upKey);
-    }
-
-    public boolean isDownPressed() {
-        return super.isKeyPressed(downKey);
-    }
-
     public boolean isMoving() {
-        return isLeftPressed() || isRightPressed()
-                || isUpPressed() || isDownPressed();
-    }
-
-    public void setUpKey(int upKey) {
-        super.removeKey(this.upKey);
-        super.bindKey(upKey);
-        this.upKey = upKey;
-    }
-
-    public void setDownKey(int downKey) {
-        super.removeKey(this.downKey);
-        super.bindKey(downKey);
-        this.downKey = downKey;
+        return isLeftPressed() || isRightPressed();
     }
 
     public void setRightKey(int rightKey) {

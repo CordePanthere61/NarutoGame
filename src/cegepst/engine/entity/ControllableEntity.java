@@ -13,11 +13,6 @@ public abstract class ControllableEntity extends MovableEntity {
     public void moveAccordingToHandler() {
         if (!controller.isMoving()) {
             return;
-        }
-        if (controller.isUpPressed()) {
-            moveUp();
-        } else if (controller.isDownPressed()) {
-            moveDown();
         } else if (controller.isRightPressed()) {
             moveRight();
         } else if (controller.isLeftPressed()) {

@@ -15,7 +15,7 @@ public class NarutoGame extends Game {
 
     @Override
     public void initialize() {
-
+        ImageLoader.getInstance();
     }
 
     @Override
@@ -26,6 +26,9 @@ public class NarutoGame extends Game {
     @Override
     public void update() {
         player.update();
+        if (gamePad.isQuitPressed()) {
+            super.stop();
+        }
     }
 
     @Override

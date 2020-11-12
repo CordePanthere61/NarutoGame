@@ -8,7 +8,7 @@ import java.awt.*;
 public abstract class MovableEntity extends UpdatableEntity {
 
     private Collision collision;
-    private Direction direction = Direction.UP;
+    private Direction direction = Direction.RIGHT;
     private int speed = 1;
     private boolean moved;
     private int lastX;
