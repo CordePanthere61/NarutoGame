@@ -1,11 +1,9 @@
 package cegepst;
 
-import cegepst.engine.Buffer;
-import cegepst.engine.CollidableRepository;
+import cegepst.engine.graphics.Buffer;
+import cegepst.engine.entity.CollidableRepository;
 import cegepst.engine.entity.StaticEntity;
-import com.sun.scenario.effect.Color4f;
 
-import javax.swing.plaf.ColorChooserUI;
 import java.awt.*;
 
 public class Brick extends StaticEntity {

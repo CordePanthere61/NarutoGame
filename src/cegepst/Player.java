@@ -1,8 +1,7 @@
 package cegepst;
 
-import cegepst.engine.Buffer;
+import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
-import cegepst.engine.controls.MovementController;
 import cegepst.engine.entity.ControllableEntity;
 
 import java.awt.*;

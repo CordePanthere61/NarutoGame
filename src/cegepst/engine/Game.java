@@ -1,5 +1,8 @@
 package cegepst.engine;
 
+import cegepst.engine.graphics.Buffer;
+import cegepst.engine.graphics.RenderingEngine;
+
 import java.awt.event.KeyListener;
 
 public abstract class Game {

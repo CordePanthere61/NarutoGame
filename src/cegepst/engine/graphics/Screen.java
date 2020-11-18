@@ -1,4 +1,4 @@
-package cegepst.engine;
+package cegepst.engine.graphics;
 
 import java.awt.Cursor;
 import java.awt.DisplayMode;

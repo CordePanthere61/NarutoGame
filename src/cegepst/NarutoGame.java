@@ -1,6 +1,6 @@
 package cegepst;
 
-import cegepst.engine.Buffer;
+import cegepst.engine.graphics.Buffer;
 import cegepst.engine.Game;
 
 public class NarutoGame extends Game {

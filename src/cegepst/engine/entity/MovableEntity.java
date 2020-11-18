@@ -1,6 +1,6 @@
 package cegepst.engine.entity;
 
-import cegepst.engine.Buffer;
+import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 
 import java.awt.*;
