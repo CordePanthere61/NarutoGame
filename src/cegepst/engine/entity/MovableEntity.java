@@ -8,72 +8,37 @@ import java.awt.*;
 public abstract class MovableEntity extends UpdatableEntity {
 
     private final Collision collision;
-    private Direction direction = Direction.UP;
+    private Gravity gravity;
+    private Direction direction = Direction.RIGHT;
     protected int speed = 1;
     private boolean moved;
     private int lastX;
     private int lastY;
-    private double gravity = 1; // falling speed;
-    private double jumpSpeed = 4;
-    private int jumpMaxHeight = 24; // jumping max
-    private int currentJumpMeter = 0;
-    private boolean jumping = false;
-    private boolean falling = false;
+
 
     public MovableEntity() {
         collision = new Collision(this);
+        gravity = new Gravity(this, collision);
     }
 
     @Override
     public void update() { // done first before any other action
-
-            // Are we jumping?
-        if (jumping) {
-            jump();
-        } else {
-            // Are we falling?
-            if (collision.getAllowedSpeed(Direction.DOWN) > 0) {
-                fall();
-            } else {
-                falling = false;
-                gravity = 1; // reset
-            }
-        }
-
+        gravity.update();
         moved = (x != lastX || y != lastY);
         lastX = x;
         lastY = y;
     }
 
-    private void jump() {
-        move(Direction.UP);
-        currentJumpMeter++;
-        jumpSpeed -= 0.05; // deceleration
-        if (jumpSpeed < 1) {
-            jumpSpeed = 1; // minimum
-        }
-        if (currentJumpMeter == jumpMaxHeight) {
-            jumping = false;
-            currentJumpMeter = 0;
-            jumpSpeed = 4; // reset
-        }
-    }
 
-    private void fall() {
-        falling = true;
-        move(Direction.DOWN);
-        gravity += 0.15; // Acceleration constant (custom to game)
-    }
 
     public void startJump() {
-        if (falling) {
-            return; // prevent double jumps
-        }
-        if (collision.getAllowedSpeed(Direction.DOWN) > 0) { // should keep in memory since its called often
+        if (hasSpaceBelow() || gravity.isFalling()) {
             return; // prevent continous jump midair
         }
-        jumping = true;
+        gravity.jump();
     }
+
+
 
     public void moveLeft() {
         move(Direction.LEFT);
@@ -92,17 +57,7 @@ public abstract class MovableEntity extends UpdatableEntity {
     }
 
     public void move(Direction direction) {
-        if (jumping) {
-            // Limit movement in midair (jump mobility)
-            collision.setSpeed(direction == Direction.UP ? (int) jumpSpeed : 2);
-        } else if (falling) {
-            // Limit movement in midair (fall mobility)
-            collision.setSpeed((direction == Direction.DOWN) ? (int) gravity : 2);
-        } else {
-            // Make sure to apply basic speed for other cases
-            collision.setSpeed(speed);
-        }
-
+        gravity.updateCollisionSpeed(direction);
         this.direction = direction;
         int allowedSpeed = collision.getAllowedSpeed(direction);
         x += direction.getVelocityX(allowedSpeed);
@@ -151,6 +106,10 @@ public abstract class MovableEntity extends UpdatableEntity {
             case RIGHT: return getCollisionRightBound();
         }
         return getBounds();
+    }
+
+    public boolean hasSpaceBelow() {
+        return collision.getAllowedSpeed(Direction.DOWN) > 0;
     }
 
     private Rectangle getCollisionUpperBound() {

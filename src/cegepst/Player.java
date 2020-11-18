@@ -32,7 +32,7 @@ public class Player extends ControllableEntity {
     @Override
     public void update() {
         super.update();
-        moveAccordingToHandler();
+        //moveAccordingToHandler();
         if (gamePad.isJumpPressed()) {
             startJump();
         }
@@ -44,7 +44,7 @@ public class Player extends ControllableEntity {
     @Override
     public void draw(Buffer buffer) {
         buffer.drawImage(determineWhichFrameToDraw(), x, y);
-        //drawHitBox(buffer);
+        drawHitBox(buffer);
     }
 
     public void loadFrames() {
