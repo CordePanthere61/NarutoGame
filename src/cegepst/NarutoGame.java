@@ -7,10 +7,14 @@ public class NarutoGame extends Game {
 
     private Player player;
     private GamePad gamePad;
+    private Brick brick;
+    private Brick brick2;
 
     public NarutoGame() {
         gamePad = new GamePad();
         player = new Player(gamePad);
+        brick = new Brick(100, 400);
+        brick2 = new Brick(250, 450);
     }
 
     @Override
@@ -34,5 +38,7 @@ public class NarutoGame extends Game {
     @Override
     public void draw(Buffer buffer) {
         player.draw(buffer);
+        brick.draw(buffer);
+        brick2.draw(buffer);
     }
 }

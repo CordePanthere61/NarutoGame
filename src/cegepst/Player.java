@@ -11,17 +11,22 @@ public class Player extends ControllableEntity {
 
     private static final int ANIMATION_SPEED = 4;
 
+    private GamePad gamePad;
+
     private Image[] leftFrames;
     private Image[] rightFrames;
     private Image[] idleFrames;
+    private Image[] downFrame;
+    private Image[] upFrame;
     private int currentAnimationFrame = 0; // idle frame (middle)
     private int nextFrame = ANIMATION_SPEED;
 
-    public Player(MovementController controller) {
+    public Player(GamePad controller) {
         super(controller);
-        setSpeed(4);
+        this.gamePad = controller;
+        setSpeed(2);
         setDimension(20,56);
-        teleport(100,100);
+        teleport(120,100);
         loadFrames();
     }
 
@@ -29,37 +34,60 @@ public class Player extends ControllableEntity {
     public void update() {
         super.update();
         moveAccordingToHandler();
+        if (gamePad.isJumpPressed()) {
+            startJump();
+        }
+        updateDimensions();
         updateCurrentAnimationFrame();
+
     }
 
     @Override
     public void draw(Buffer buffer) {
         buffer.drawImage(determineWhichFrameToDraw(), x, y);
-    }
-
-    private Image determineWhichFrameToDraw() {
-        if (hasMoved()) {
-            super.setDimension(40,52);
-            if (super.getDirection() == Direction.RIGHT) {
-                return rightFrames[currentAnimationFrame];
-            } else if (super.getDirection() == Direction.LEFT) {
-                return leftFrames[currentAnimationFrame];
-            }
-        } else {
-            super.setDimension(20,56);
-            if (super.getDirection() == Direction.RIGHT) {
-                return idleFrames[0];
-            } else if (super.getDirection() == Direction.LEFT) {
-                return idleFrames[1];
-            }
-        }
-        return null;
+        //drawHitBox(buffer);
     }
 
     public void loadFrames() {
         leftFrames = ImageLoader.getInstance().getPlayerFrames("left");
         rightFrames = ImageLoader.getInstance().getPlayerFrames("right");
         idleFrames = ImageLoader.getInstance().getPlayerFrames("idle");
+        downFrame = ImageLoader.getInstance().getPlayerFrames("down");
+        upFrame = ImageLoader.getInstance().getPlayerFrames("up");
+    }
+
+    private Image determineWhichFrameToDraw() {
+        if (hasMoved()) {
+            if (super.getDirection() == Direction.RIGHT) {
+                return rightFrames[currentAnimationFrame];
+            } else if (super.getDirection() == Direction.LEFT) {
+                return leftFrames[currentAnimationFrame];
+            } else if (super.getDirection() == Direction.DOWN) {
+                return downFrame[0];
+            } else if (super.getDirection() == Direction.UP) {
+                return upFrame[0];
+            }
+        } else {
+            if (super.getDirection() == Direction.RIGHT) {
+                return idleFrames[0];
+            } else if (super.getDirection() == Direction.LEFT) {
+                return idleFrames[1];
+            } else if (super.getDirection() == Direction.DOWN) {
+                return idleFrames[0];
+            }
+        }
+        return null;
+    }
+
+    private void updateDimensions() {
+        if (hasMoved()) {
+            if (super.getDirection() == Direction.UP) {
+                super.setDimension(30,56);
+            }
+            super.setDimension(40,56);
+        } else {
+            super.setDimension(20,56);
+        }
     }
 
     private void updateCurrentAnimationFrame() {

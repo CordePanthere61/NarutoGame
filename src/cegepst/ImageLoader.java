@@ -44,6 +44,12 @@ public class ImageLoader {
             image[5] = narutoSpriteSheet.getSubimage(226,802,40,52);
             image[6] = narutoSpriteSheet.getSubimage(268,802,40,52);
             image[7] = narutoSpriteSheet.getSubimage(310,802,40,52); //end left frames
+        } else if (type.equals("down")) {
+            image = new Image[1];
+            image[0] = narutoSpriteSheet.getSubimage(105, 2175, 40, 52);
+        } else if (type.equals("up")) {
+            image = new Image[1];
+            image[0] = narutoSpriteSheet.getSubimage(70, 2175, 30, 52);
         }
         return image;
     }

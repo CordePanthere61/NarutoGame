@@ -7,24 +7,72 @@ import java.awt.*;
 
 public abstract class MovableEntity extends UpdatableEntity {
 
-    private Collision collision;
-    private Direction direction = Direction.RIGHT;
-    private int speed = 1;
+    private final Collision collision;
+    private Direction direction = Direction.UP;
+    protected int speed = 1;
     private boolean moved;
     private int lastX;
     private int lastY;
-
-    @Override
-    public void update() {
-        moved = false;
-    }
+    private double gravity = 1; // falling speed;
+    private double jumpSpeed = 4;
+    private int jumpMaxHeight = 24; // jumping max
+    private int currentJumpMeter = 0;
+    private boolean jumping = false;
+    private boolean falling = false;
 
     public MovableEntity() {
         collision = new Collision(this);
     }
 
-    public boolean hasMoved() {
-        return moved;
+    @Override
+    public void update() { // done first before any other action
+
+            // Are we jumping?
+        if (jumping) {
+            jump();
+        } else {
+            // Are we falling?
+            if (collision.getAllowedSpeed(Direction.DOWN) > 0) {
+                fall();
+            } else {
+                falling = false;
+                gravity = 1; // reset
+            }
+        }
+
+        moved = (x != lastX || y != lastY);
+        lastX = x;
+        lastY = y;
+    }
+
+    private void jump() {
+        move(Direction.UP);
+        currentJumpMeter++;
+        jumpSpeed -= 0.05; // deceleration
+        if (jumpSpeed < 1) {
+            jumpSpeed = 1; // minimum
+        }
+        if (currentJumpMeter == jumpMaxHeight) {
+            jumping = false;
+            currentJumpMeter = 0;
+            jumpSpeed = 4; // reset
+        }
+    }
+
+    private void fall() {
+        falling = true;
+        move(Direction.DOWN);
+        gravity += 0.15; // Acceleration constant (custom to game)
+    }
+
+    public void startJump() {
+        if (falling) {
+            return; // prevent double jumps
+        }
+        if (collision.getAllowedSpeed(Direction.DOWN) > 0) { // should keep in memory since its called often
+            return; // prevent continous jump midair
+        }
+        jumping = true;
     }
 
     public void moveLeft() {
@@ -44,30 +92,21 @@ public abstract class MovableEntity extends UpdatableEntity {
     }
 
     public void move(Direction direction) {
-        this.direction = direction;
-        int allowedDistance = collision.getAllowedSpeed(direction);
-        x += direction.getVelocityX(allowedDistance);
-        y += direction.getVelocityY(allowedDistance);
-        moved = (x != lastX || y != lastY);
-        lastX = x;
-        lastY = y;
-    }
-
-    public void drawHitBox(Buffer buffer) {
-        Rectangle rectangle = getHitBox();
-        Color color = new Color(255, 0, 0, 200);
-        buffer.drawRectangle(rectangle.x, rectangle.y,
-                rectangle.width, rectangle.height, color);
-    }
-
-    protected Rectangle getHitBox() {
-        switch (direction) {
-            case UP: return getUpperHitBox();
-            case DOWN: return getLowerHitBox();
-            case LEFT: return getLeftHitBox();
-            case RIGHT: return getRightHitBox();
-            default: return getBounds();
+        if (jumping) {
+            // Limit movement in midair (jump mobility)
+            collision.setSpeed(direction == Direction.UP ? (int) jumpSpeed : 2);
+        } else if (falling) {
+            // Limit movement in midair (fall mobility)
+            collision.setSpeed((direction == Direction.DOWN) ? (int) gravity : 2);
+        } else {
+            // Make sure to apply basic speed for other cases
+            collision.setSpeed(speed);
         }
+
+        this.direction = direction;
+        int allowedSpeed = collision.getAllowedSpeed(direction);
+        x += direction.getVelocityX(allowedSpeed);
+        y += direction.getVelocityY(allowedSpeed);
     }
 
     public void setDirection(Direction direction) {
@@ -86,26 +125,47 @@ public abstract class MovableEntity extends UpdatableEntity {
         return speed;
     }
 
-    public boolean hitBoxIntersectWith(StaticEntity other) {
+    public boolean hasMoved() {
+        return moved;
+    }
+
+    public void drawHitBox(Buffer buffer) {
+        if (hasMoved()) {
+            Rectangle hitBox = getCollisionBound(direction);
+            buffer.drawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, new Color(255, 0, 0, 200));
+        }
+    }
+
+    public boolean collisionBoundIntersectWith(StaticEntity other) {
         if (other == null) {
             return false;
         }
-        return getHitBox().intersects(other.getBounds());
+        return getCollisionBound(direction).intersects(other.getBounds());
     }
 
-    private Rectangle getUpperHitBox() {
-        return new Rectangle(x, y - speed, width, speed);
+    public Rectangle getCollisionBound(Direction direction) {
+        switch (direction) {
+            case UP: return getCollisionUpperBound();
+            case DOWN: return getCollisionLowerBound();
+            case LEFT: return getCollisionLeftBound();
+            case RIGHT: return getCollisionRightBound();
+        }
+        return getBounds();
     }
 
-    private Rectangle getLowerHitBox() {
-        return new Rectangle(x, y + height, width, speed);
+    private Rectangle getCollisionUpperBound() {
+        return new Rectangle(x, y - speed, width, collision.getSpeed());
     }
 
-    private Rectangle getLeftHitBox() {
-        return new Rectangle(x - speed, y, speed, height);
+    private Rectangle getCollisionLowerBound() {
+        return new Rectangle(x, y + height, width, collision.getSpeed());
     }
 
-    private Rectangle getRightHitBox() {
-        return new Rectangle(x + width, y, speed, height);
+    private Rectangle getCollisionLeftBound() {
+        return new Rectangle(x - speed, y, collision.getSpeed(), height);
+    }
+
+    private Rectangle getCollisionRightBound() {
+        return new Rectangle(x + width, y, collision.getSpeed(), height);
     }
 }

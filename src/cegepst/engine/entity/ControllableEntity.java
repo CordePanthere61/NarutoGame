@@ -10,10 +10,17 @@ public abstract class ControllableEntity extends MovableEntity {
         this.controller = controller;
     }
 
+    @Override
+    public void update() {
+        super.update();
+        moveAccordingToHandler();
+    }
+
     public void moveAccordingToHandler() {
         if (!controller.isMoving()) {
             return;
-        } else if (controller.isRightPressed()) {
+        }
+        if (controller.isRightPressed()) {
             moveRight();
         } else if (controller.isLeftPressed()) {
             moveLeft();
