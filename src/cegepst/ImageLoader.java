@@ -50,6 +50,9 @@ public class ImageLoader {
         } else if (type.equals("up")) {
             image = new Image[1];
             image[0] = narutoSpriteSheet.getSubimage(70, 2175, 30, 52);
+        } else if (type.equals("doubleJump")) {
+            image = new Image[1];
+            image[0] = narutoSpriteSheet.getSubimage(0, 5768,40,52 );
         }
         return image;
     }

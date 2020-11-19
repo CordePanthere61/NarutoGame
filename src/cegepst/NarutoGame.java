@@ -2,24 +2,28 @@ package cegepst;
 
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.Game;
+import cegepst.player.Player;
+
+import java.util.ArrayList;
 
 public class NarutoGame extends Game {
 
     private Player player;
     private GamePad gamePad;
+    private ArrayList<Brick> bricks;
     private Brick brick;
     private Brick brick2;
 
     public NarutoGame() {
         gamePad = new GamePad();
         player = new Player(gamePad);
-        brick = new Brick(100, 400);
-        brick2 = new Brick(250, 450);
+        bricks = new ArrayList<>();
     }
 
     @Override
     public void initialize() {
         ImageLoader.getInstance();
+        bricks.add(new Brick(0, 400, 800, 20));
     }
 
     @Override
@@ -38,7 +42,8 @@ public class NarutoGame extends Game {
     @Override
     public void draw(Buffer buffer) {
         player.draw(buffer);
-        brick.draw(buffer);
-        brick2.draw(buffer);
+        for (Brick brick : bricks) {
+            brick.draw(buffer);
+        }
     }
 }

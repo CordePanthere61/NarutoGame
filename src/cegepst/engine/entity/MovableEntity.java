@@ -12,6 +12,8 @@ public abstract class MovableEntity extends UpdatableEntity {
     private Direction direction = Direction.RIGHT;
     protected int speed = 1;
     private boolean moved;
+    private boolean doubleJumped = false;
+    private int jumpCooldown;
     private int lastX;
     private int lastY;
 
@@ -24,18 +26,33 @@ public abstract class MovableEntity extends UpdatableEntity {
     @Override
     public void update() { // done first before any other action
         gravity.update();
+        if (!hasSpaceBelow() && doubleJumped) {
+            doubleJumped = false;
+        }
         moved = (x != lastX || y != lastY);
         lastX = x;
         lastY = y;
+        jumpCooldown--;
+        if (jumpCooldown < 0) {
+            jumpCooldown = 0;
+        }
+        //System.out.println(doubleJumped);
     }
 
 
 
     public void startJump() {
-        if (hasSpaceBelow() || gravity.isFalling()) {
-            return; // prevent continous jump midair
+
+        if (gravity.canDoubleJump() && !doubleJumped && jumpCooldown == 0) {
+            gravity.jump();
+            //System.out.println("double jumped");
+            doubleJumped = true;
+        } else if (!hasSpaceBelow()) {
+            //System.out.println("jumped");
+            gravity.jump();
+            jumpCooldown = 30;
         }
-        gravity.jump();
+
     }
 
 
@@ -82,6 +99,10 @@ public abstract class MovableEntity extends UpdatableEntity {
 
     public boolean hasMoved() {
         return moved;
+    }
+
+    public boolean hasDoubleJumped() {
+        return doubleJumped;
     }
 
     public void drawHitBox(Buffer buffer) {

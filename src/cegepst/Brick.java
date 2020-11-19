@@ -10,8 +10,8 @@ public class Brick extends StaticEntity {
 
     private Color color = new Color(255,255,255, 50);
 
-    public Brick(int x, int y) {
-        setDimension(200,20);
+    public Brick(int x, int y, int width, int height) {
+        setDimension(width,height);
         teleport(x, y);
         CollidableRepository.getInstance().registerEntity(this);
     }

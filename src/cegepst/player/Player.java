@@ -1,5 +1,7 @@
-package cegepst;
+package cegepst.player;
 
+import cegepst.GamePad;
+import cegepst.ImageLoader;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.ControllableEntity;
@@ -11,19 +13,22 @@ public class Player extends ControllableEntity {
     private static final int ANIMATION_SPEED = 4;
 
     private GamePad gamePad;
+    private ImageRotate imageRotate;
 
     private Image[] leftFrames;
     private Image[] rightFrames;
     private Image[] idleFrames;
     private Image[] downFrame;
     private Image[] upFrame;
+    private Image[] doubleJumpFrames;
     private int currentAnimationFrame = 0; // idle frame (middle)
     private int nextFrame = ANIMATION_SPEED;
 
     public Player(GamePad controller) {
         super(controller);
         this.gamePad = controller;
-        setSpeed(2);
+        this.imageRotate = new ImageRotate();
+        setSpeed(5);
         setDimension(20,56);
         teleport(120,100);
         loadFrames();
@@ -44,7 +49,7 @@ public class Player extends ControllableEntity {
     @Override
     public void draw(Buffer buffer) {
         buffer.drawImage(determineWhichFrameToDraw(), x, y);
-        drawHitBox(buffer);
+        //drawHitBox(buffer);
     }
 
     public void loadFrames() {
@@ -53,6 +58,7 @@ public class Player extends ControllableEntity {
         idleFrames = ImageLoader.getInstance().getPlayerFrames("idle");
         downFrame = ImageLoader.getInstance().getPlayerFrames("down");
         upFrame = ImageLoader.getInstance().getPlayerFrames("up");
+        doubleJumpFrames = ImageLoader.getInstance().getPlayerFrames("doubleJump");
     }
 
     private Image determineWhichFrameToDraw() {
@@ -64,6 +70,9 @@ public class Player extends ControllableEntity {
             } else if (super.getDirection() == Direction.DOWN) {
                 return downFrame[0];
             } else if (super.getDirection() == Direction.UP) {
+//                if (super.hasDoubleJumped()) {
+//                    return imageRotate.rotateImage(doubleJumpFrames[0], width, height);
+//                }
                 return upFrame[0];
             }
         } else {
