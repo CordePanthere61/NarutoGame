@@ -41,7 +41,7 @@ public class Player extends ControllableEntity {
         if (gamePad.isJumpPressed()) {
             startJump();
         }
-        updateDimensions();
+        //updateDimensions();
         updateCurrentAnimationFrame();
 
     }
@@ -87,16 +87,16 @@ public class Player extends ControllableEntity {
         return null;
     }
 
-    private void updateDimensions() {
-        if (hasMoved()) {
-            if (super.getDirection() == Direction.UP) {
-                super.setDimension(30,56);
-            }
-            super.setDimension(40,56);
-        } else {
-            super.setDimension(20,56);
-        }
-    }
+//    private void updateDimensions() {
+//        if (hasMoved()) {
+//            if (super.getDirection() == Direction.UP) {
+//                super.setDimension(30,56);
+//            }
+//            super.setDimension(20,56);
+//        } else {
+//            super.setDimension(20,56);
+//        }
+//    }
 
     private void updateCurrentAnimationFrame() {
         if (super.hasMoved()) {
@@ -108,6 +108,8 @@ public class Player extends ControllableEntity {
                 }
                 nextFrame = ANIMATION_SPEED;
             }
+        } else {
+            currentAnimationFrame = 0;
         }
     }
 }

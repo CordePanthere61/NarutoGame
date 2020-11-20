@@ -11,19 +11,20 @@ public class NarutoGame extends Game {
     private Player player;
     private GamePad gamePad;
     private ArrayList<Brick> bricks;
-    private Brick brick;
-    private Brick brick2;
+    private Enemy enemy;
 
     public NarutoGame() {
         gamePad = new GamePad();
         player = new Player(gamePad);
         bricks = new ArrayList<>();
+        enemy = new Enemy(player);
     }
 
     @Override
     public void initialize() {
         ImageLoader.getInstance();
         bricks.add(new Brick(0, 400, 800, 20));
+        bricks.add(new Brick(200, 250, 400, 20));
     }
 
     @Override
@@ -34,6 +35,7 @@ public class NarutoGame extends Game {
     @Override
     public void update() {
         player.update();
+        enemy.update();
         if (gamePad.isQuitPressed()) {
             super.stop();
         }
@@ -42,6 +44,7 @@ public class NarutoGame extends Game {
     @Override
     public void draw(Buffer buffer) {
         player.draw(buffer);
+        enemy.draw(buffer);
         for (Brick brick : bricks) {
             brick.draw(buffer);
         }

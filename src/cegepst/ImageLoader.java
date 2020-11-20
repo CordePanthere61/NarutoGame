@@ -1,5 +1,7 @@
 package cegepst;
 
+import sun.awt.util.IdentityArrayList;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,7 +11,9 @@ public class ImageLoader {
 
     private static ImageLoader instance;
     private final String NARUTO_PATH = "images/narutoSprites.png";
+    private final String DEIDARA_PATH = "images/deidaraSprites.png";
     private BufferedImage narutoSpriteSheet;
+    private BufferedImage deidaraSpriteSheet;
 
     public static ImageLoader getInstance() {
         if (instance == null) {
@@ -57,8 +61,24 @@ public class ImageLoader {
         return image;
     }
 
+//    private Image getDeidaraSprites(String type) {
+//        Image image[] = null;
+//        if (type.equals("left")) {
+//
+//        }
+//    }
+
     private ImageLoader() {
         loadNarutoSpriteSheet();
+        loadDeidaraSpriteSheet();
+    }
+
+    private void loadDeidaraSpriteSheet()  {
+        try {
+            deidaraSpriteSheet = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(DEIDARA_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadNarutoSpriteSheet() {
