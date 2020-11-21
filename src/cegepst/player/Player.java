@@ -2,6 +2,7 @@ package cegepst.player;
 
 import cegepst.GamePad;
 import cegepst.ImageLoader;
+import cegepst.engine.entity.CollidableRepository;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.ControllableEntity;
@@ -32,6 +33,7 @@ public class Player extends ControllableEntity {
         setDimension(20,56);
         teleport(120,100);
         loadFrames();
+        CollidableRepository.getInstance().registerEntity(this);
     }
 
     @Override

@@ -26,4 +26,15 @@ public abstract class ControllableEntity extends MovableEntity {
             moveLeft();
         }
     }
+
+    public void moveOppositeToHandler() {
+        if (!controller.isMoving()) {
+            return;
+        }
+        if (controller.isRightPressed()) {
+            moveLeft();
+        } else if (controller.isLeftPressed()) {
+            moveRight();
+        }
+    }
 }
