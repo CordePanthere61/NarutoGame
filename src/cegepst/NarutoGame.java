@@ -26,10 +26,9 @@ public class NarutoGame extends Game {
 
     @Override
     public void initialize() {
-        RenderingEngine.getInstance().getScreen().hideCursor();
+        //RenderingEngine.getInstance().getScreen().hideCursor();
         ImageLoader.getInstance();
-        bricks.add(new Brick(0, 400, 800, 20));
-        bricks.add(new Brick(200, 250, 400, 20));
+        
     }
 
     @Override

@@ -13,6 +13,7 @@ public abstract class MovableEntity extends UpdatableEntity {
     protected int speed = 1;
     private boolean moved;
     private boolean doubleJumped = false;
+    private boolean gravityEnabled = true;
     private int jumpCooldown;
     private int lastX;
     private int lastY;
@@ -25,7 +26,9 @@ public abstract class MovableEntity extends UpdatableEntity {
 
     @Override
     public void update() { // done first before any other action
-        gravity.update();
+        if (gravityEnabled) {
+            gravity.update();
+        }
         if (!hasSpaceBelow() && doubleJumped) {
             doubleJumped = false;
         }
@@ -42,6 +45,9 @@ public abstract class MovableEntity extends UpdatableEntity {
 
 
     public void startJump() {
+        if (!gravityEnabled) {
+            return;
+        }
 
         if (gravity.canDoubleJump() && !doubleJumped && jumpCooldown == 0) {
             gravity.jump();
@@ -55,7 +61,9 @@ public abstract class MovableEntity extends UpdatableEntity {
 
     }
 
-
+    public void setGravityEnabled(boolean gravityEnabled) {
+        this.gravityEnabled = gravityEnabled;
+    }
 
     public void moveLeft() {
         move(Direction.LEFT);

@@ -20,6 +20,7 @@ public class World extends ControllableEntity {
         super(controller);
         setSpeed(5);
         teleport(0,0);
+        super.setGravityEnabled(false);
         loadBackground();
         blockades = new ArrayList<>();
         Blockade grassBlockade = new Blockade();

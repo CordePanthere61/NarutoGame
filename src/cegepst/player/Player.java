@@ -29,7 +29,7 @@ public class Player extends ControllableEntity {
         super(controller);
         this.gamePad = controller;
         this.imageRotate = new ImageRotate();
-        setSpeed(5);
+        setSpeed(0);
         setDimension(20,56);
         teleport(120,100);
         loadFrames();
@@ -45,13 +45,12 @@ public class Player extends ControllableEntity {
         }
         //updateDimensions();
         updateCurrentAnimationFrame();
-
     }
 
     @Override
     public void draw(Buffer buffer) {
         buffer.drawImage(determineWhichFrameToDraw(), x, y);
-        //drawHitBox(buffer);
+        drawHitBox(buffer);
     }
 
     public void loadFrames() {
@@ -64,10 +63,10 @@ public class Player extends ControllableEntity {
     }
 
     private Image determineWhichFrameToDraw() {
-        if (hasMoved()) {
-            if (super.getDirection() == Direction.RIGHT) {
+        if (gamePad.isLeftPressed() || gamePad.isRightPressed() || gamePad.isJumpPressed()) {
+            if (gamePad.isRightPressed()) {
                 return rightFrames[currentAnimationFrame];
-            } else if (super.getDirection() == Direction.LEFT) {
+            } else if (gamePad.isLeftPressed()) {
                 return leftFrames[currentAnimationFrame];
             } else if (super.getDirection() == Direction.DOWN) {
                 return downFrame[0];
@@ -101,7 +100,7 @@ public class Player extends ControllableEntity {
 //    }
 
     private void updateCurrentAnimationFrame() {
-        if (super.hasMoved()) {
+        if (gamePad.isLeftPressed() || gamePad.isRightPressed()) {
             --nextFrame;
             if (nextFrame == 0) {
                 ++currentAnimationFrame;

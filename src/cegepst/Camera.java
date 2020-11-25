@@ -17,7 +17,7 @@ public class Camera extends ControllableEntity {
     @Override
     public void update() {
         super.update();
-        moveOppositeToHandler();
+        moveAccordingToHandler();
     }
 
     @Override
