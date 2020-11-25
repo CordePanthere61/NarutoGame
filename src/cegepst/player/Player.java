@@ -2,7 +2,6 @@ package cegepst.player;
 
 import cegepst.GamePad;
 import cegepst.ImageLoader;
-import cegepst.engine.entity.CollidableRepository;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.ControllableEntity;
@@ -29,11 +28,10 @@ public class Player extends ControllableEntity {
         super(controller);
         this.gamePad = controller;
         this.imageRotate = new ImageRotate();
-        setSpeed(0);
+        setSpeed(5);
         setDimension(20,56);
         teleport(120,100);
         loadFrames();
-        CollidableRepository.getInstance().registerEntity(this);
     }
 
     @Override
@@ -44,13 +42,15 @@ public class Player extends ControllableEntity {
             startJump();
         }
         //updateDimensions();
+        System.out.println(super.getDirection());
         updateCurrentAnimationFrame();
+
     }
 
     @Override
     public void draw(Buffer buffer) {
         buffer.drawImage(determineWhichFrameToDraw(), x, y);
-        drawHitBox(buffer);
+        //drawHitBox(buffer);
     }
 
     public void loadFrames() {
@@ -59,14 +59,13 @@ public class Player extends ControllableEntity {
         idleFrames = ImageLoader.getInstance().getPlayerFrames("idle");
         downFrame = ImageLoader.getInstance().getPlayerFrames("down");
         upFrame = ImageLoader.getInstance().getPlayerFrames("up");
-        doubleJumpFrames = ImageLoader.getInstance().getPlayerFrames("doubleJump");
     }
 
     private Image determineWhichFrameToDraw() {
-        if (gamePad.isLeftPressed() || gamePad.isRightPressed() || gamePad.isJumpPressed()) {
-            if (gamePad.isRightPressed()) {
+        if (gamePad.isMovementKeyPressed()) {
+            if (super.getDirection() == Direction.RIGHT) {
                 return rightFrames[currentAnimationFrame];
-            } else if (gamePad.isLeftPressed()) {
+            } else if (super.getDirection() == Direction.LEFT) {
                 return leftFrames[currentAnimationFrame];
             } else if (super.getDirection() == Direction.DOWN) {
                 return downFrame[0];
@@ -83,6 +82,8 @@ public class Player extends ControllableEntity {
                 return idleFrames[1];
             } else if (super.getDirection() == Direction.DOWN) {
                 return idleFrames[0];
+            } else if (super.getDirection() == Direction.UP) {
+                return upFrame[0];
             }
         }
         return null;
@@ -100,7 +101,7 @@ public class Player extends ControllableEntity {
 //    }
 
     private void updateCurrentAnimationFrame() {
-        if (gamePad.isLeftPressed() || gamePad.isRightPressed()) {
+        if (gamePad.isMovementKeyPressed()) {
             --nextFrame;
             if (nextFrame == 0) {
                 ++currentAnimationFrame;

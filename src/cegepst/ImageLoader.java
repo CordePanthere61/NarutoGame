@@ -12,8 +12,10 @@ public class ImageLoader {
     private static ImageLoader instance;
     private final String NARUTO_PATH = "images/narutoSprites.png";
     private final String DEIDARA_PATH = "images/deidaraSprites.png";
+    private final String MAP_PATH = "images/narutomap.png";
     private BufferedImage narutoSpriteSheet;
     private BufferedImage deidaraSpriteSheet;
+    private BufferedImage map;
 
     public static ImageLoader getInstance() {
         if (instance == null) {
@@ -61,6 +63,10 @@ public class ImageLoader {
         return image;
     }
 
+    public Image getMapImage() {
+        return map;
+    }
+
 //    private Image getDeidaraSprites(String type) {
 //        Image image[] = null;
 //        if (type.equals("left")) {
@@ -71,6 +77,7 @@ public class ImageLoader {
     private ImageLoader() {
         loadNarutoSpriteSheet();
         loadDeidaraSpriteSheet();
+        loadMap();
     }
 
     private void loadDeidaraSpriteSheet()  {
@@ -89,5 +96,12 @@ public class ImageLoader {
         }
     }
 
+    private void loadMap() {
+        try {
+            map = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(MAP_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

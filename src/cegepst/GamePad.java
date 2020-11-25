@@ -20,14 +20,8 @@ public class GamePad extends MovementController {
         RenderingEngine.getInstance().addInputListener(this);
     }
 
-    @Override
-    public boolean isLeftPressed() {
-        return super.isLeftPressed();
-    }
-
-    @Override
-    public boolean isRightPressed() {
-        return super.isRightPressed();
+    public boolean isMovementKeyPressed() {
+        return isLeftPressed() || isRightPressed() || isJumpPressed();
     }
 
     public boolean isJumpPressed() {

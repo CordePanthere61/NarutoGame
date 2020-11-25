@@ -1,5 +1,6 @@
 package cegepst.engine.entity;
 
+import cegepst.engine.controls.Direction;
 import cegepst.engine.controls.MovementController;
 
 public abstract class ControllableEntity extends MovableEntity {
@@ -13,16 +14,15 @@ public abstract class ControllableEntity extends MovableEntity {
     @Override
     public void update() {
         super.update();
+        updateDirection();
+        //moveAccordingToHandler();
     }
 
-    public void moveAccordingToHandler() {
-        if (!controller.isMoving()) {
-            return;
-        }
+    public void updateDirection() {
         if (controller.isRightPressed()) {
-            moveRight();
+            super.setDirection(Direction.RIGHT);
         } else if (controller.isLeftPressed()) {
-            moveLeft();
+            super.setDirection(Direction.LEFT);
         }
     }
 
@@ -34,6 +34,17 @@ public abstract class ControllableEntity extends MovableEntity {
             moveLeft();
         } else if (controller.isLeftPressed()) {
             moveRight();
+        }
+    }
+
+    public void moveAccordingToHandler() {
+        if (!controller.isMoving()) {
+            return;
+        }
+        if (controller.isRightPressed()) {
+            moveRight();
+        } else if (controller.isLeftPressed()) {
+            moveLeft();
         }
     }
 }

@@ -45,9 +45,6 @@ public abstract class MovableEntity extends UpdatableEntity {
 
 
     public void startJump() {
-        if (!gravityEnabled) {
-            return;
-        }
 
         if (gravity.canDoubleJump() && !doubleJumped && jumpCooldown == 0) {
             gravity.jump();
@@ -61,8 +58,8 @@ public abstract class MovableEntity extends UpdatableEntity {
 
     }
 
-    public void setGravityEnabled(boolean gravityEnabled) {
-        this.gravityEnabled = gravityEnabled;
+    public void disableGravity() {
+        gravityEnabled = false;
     }
 
     public void moveLeft() {
