@@ -13,8 +13,11 @@ public class ImageLoader {
     private final String NARUTO_PATH = "images/narutoSprites.png";
     private final String DEIDARA_PATH = "images/deidaraSprites.png";
     private final String MAP_PATH = "images/narutomap.png";
+    private final String KUNAI_PATH = "images/";
     private BufferedImage narutoSpriteSheet;
     private BufferedImage deidaraSpriteSheet;
+    private BufferedImage kunaiLeft;
+    private BufferedImage kunaiRight;
     private BufferedImage map;
 
     public static ImageLoader getInstance() {
@@ -57,8 +60,21 @@ public class ImageLoader {
             image = new Image[1];
             image[0] = narutoSpriteSheet.getSubimage(70, 2175, 30, 52);
         } else if (type.equals("doubleJump")) {
-            image = new Image[1];
+            image = new Image[8];
             image[0] = narutoSpriteSheet.getSubimage(0, 5768,40,52 );
+//            for (int i = 1; i < 8; i++) {
+//                image[i] = rotateImage((BufferedImage)image[i - 1]);
+//            }
+        }
+        return image;
+    }
+
+    public Image getKunaiFrames(String type) {
+        Image image = null;
+        if (type.equals("right")) {
+            image = kunaiRight.getSubimage(0,0,20,9);
+        } else if (type.equals("left")) {
+            image = kunaiLeft.getSubimage(0,0,20,9);
         }
         return image;
     }
@@ -67,22 +83,30 @@ public class ImageLoader {
         return map;
     }
 
-//    private Image getDeidaraSprites(String type) {
-//        Image image[] = null;
-//        if (type.equals("left")) {
-//
-//        }
-//    }
 
     private ImageLoader() {
         loadNarutoSpriteSheet();
+        loadKunais();
         loadDeidaraSpriteSheet();
         loadMap();
     }
 
+//    private Image rotateImage(BufferedImage image) {
+//
+//    }
+
     private void loadDeidaraSpriteSheet()  {
         try {
             deidaraSpriteSheet = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(DEIDARA_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadKunais() {
+        try {
+            kunaiLeft = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "t.png"));
+            kunaiRight = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "aa.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

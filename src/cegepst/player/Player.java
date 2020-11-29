@@ -1,95 +1,80 @@
 package cegepst.player;
 
+import cegepst.Animator;
 import cegepst.GamePad;
 import cegepst.ImageLoader;
+import cegepst.Kunai;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.ControllableEntity;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Player extends ControllableEntity {
 
-    private static final int ANIMATION_SPEED = 4;
+
 
     private GamePad gamePad;
-    private ImageRotate imageRotate;
+    private Animator animator;
 
-    private Image[] leftFrames;
-    private Image[] rightFrames;
-    private Image[] idleFrames;
-    private Image[] downFrame;
-    private Image[] upFrame;
-    private Image[] doubleJumpFrames;
-    private int currentAnimationFrame = 0; // idle frame (middle)
-    private int nextFrame = ANIMATION_SPEED;
+
+    private boolean moveFreely = false;
 
     public Player(GamePad controller) {
         super(controller);
         this.gamePad = controller;
-        this.imageRotate = new ImageRotate();
+        animator = new Animator(this);
+
         setSpeed(5);
         setDimension(20,56);
         teleport(120,100);
-        loadFrames();
+        loadAnimatorFrames();
     }
 
     @Override
     public void update() {
         super.update();
-        //moveAccordingToHandler();
+        if (moveFreely) {
+            moveAccordingToHandler();
+        }
         if (gamePad.isJumpPressed()) {
             startJump();
         }
+
         //updateDimensions();
-        System.out.println(super.getDirection());
-        updateCurrentAnimationFrame();
+        animator.update();
+
+        //System.out.println("X : " + x + " Y : " + y);
 
     }
 
     @Override
     public void draw(Buffer buffer) {
-        buffer.drawImage(determineWhichFrameToDraw(), x, y);
+        buffer.drawImage(animator.determineWhichFrameToDraw(), x, y);
+
         //drawHitBox(buffer);
     }
 
-    public void loadFrames() {
-        leftFrames = ImageLoader.getInstance().getPlayerFrames("left");
-        rightFrames = ImageLoader.getInstance().getPlayerFrames("right");
-        idleFrames = ImageLoader.getInstance().getPlayerFrames("idle");
-        downFrame = ImageLoader.getInstance().getPlayerFrames("down");
-        upFrame = ImageLoader.getInstance().getPlayerFrames("up");
+    public void setMoveFreely(boolean input) {
+        moveFreely = input;
     }
 
-    private Image determineWhichFrameToDraw() {
-        if (gamePad.isMovementKeyPressed()) {
-            if (super.getDirection() == Direction.RIGHT) {
-                return rightFrames[currentAnimationFrame];
-            } else if (super.getDirection() == Direction.LEFT) {
-                return leftFrames[currentAnimationFrame];
-            } else if (super.getDirection() == Direction.DOWN) {
-                return downFrame[0];
-            } else if (super.getDirection() == Direction.UP) {
-//                if (super.hasDoubleJumped()) {
-//                    return imageRotate.rotateImage(doubleJumpFrames[0], width, height);
-//                }
-                return upFrame[0];
-            }
-        } else {
-            if (super.getDirection() == Direction.RIGHT) {
-                return idleFrames[0];
-            } else if (super.getDirection() == Direction.LEFT) {
-                return idleFrames[1];
-            } else if (super.getDirection() == Direction.DOWN) {
-                return idleFrames[0];
-            } else if (super.getDirection() == Direction.UP) {
-                return upFrame[0];
-            }
-        }
-        return null;
+    public void loadAnimatorFrames() {
+        animator.setLeftFrames(8, ImageLoader.getInstance().getPlayerFrames("left"));
+        animator.setRightFrames(8, ImageLoader.getInstance().getPlayerFrames("right"));
+        animator.setIdleFrames(2, ImageLoader.getInstance().getPlayerFrames("idle"));
+        animator.setDownFrame(1, ImageLoader.getInstance().getPlayerFrames("down"));
+        animator.setUpFrame(1, ImageLoader.getInstance().getPlayerFrames("up"));
+        animator.setDoubleJumpFrames(8, ImageLoader.getInstance().getPlayerFrames("doubleJump"));
     }
 
-//    private void updateDimensions() {
+    @Override
+    public boolean hasMoved() {
+        return gamePad.isMovementKeyPressed();
+    }
+
+    //    private void updateDimensions() {
 //        if (hasMoved()) {
 //            if (super.getDirection() == Direction.UP) {
 //                super.setDimension(30,56);
@@ -100,18 +85,8 @@ public class Player extends ControllableEntity {
 //        }
 //    }
 
-    private void updateCurrentAnimationFrame() {
-        if (gamePad.isMovementKeyPressed()) {
-            --nextFrame;
-            if (nextFrame == 0) {
-                ++currentAnimationFrame;
-                if (currentAnimationFrame >= leftFrames.length) {
-                    currentAnimationFrame = 0;
-                }
-                nextFrame = ANIMATION_SPEED;
-            }
-        } else {
-            currentAnimationFrame = 0;
-        }
+    public Kunai fire() {
+        System.out.println("fired");
+        return new Kunai(this);
     }
 }
