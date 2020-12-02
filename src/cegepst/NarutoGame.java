@@ -41,7 +41,7 @@ public class NarutoGame extends Game {
         player.update();
         world.update();
         camera.update();
-        if (gamePad.isFireKeyPressed()) {
+        if (gamePad.isFireKeyPressed() && player.canFire()) {
             kunais.add(player.fire());
         }
         for (Kunai kunai : kunais) {

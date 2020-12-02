@@ -11,6 +11,7 @@ import java.awt.*;
 public class Enemy extends MovableEntity {
 
     private Player target;
+    private Animator animator;
     private java.awt.Color color = new Color(255,0,0);
 
     public Enemy(Player target){
@@ -42,13 +43,11 @@ public class Enemy extends MovableEntity {
 
     private void followTarget() {
         if (!gravity.isFalling()) {
-
             if (target.getY() > y) {
                 moveRight();
             } else {
                 move(getTargetDirection());
             }
-
         }
     }
 

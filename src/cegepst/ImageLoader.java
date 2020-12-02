@@ -61,10 +61,28 @@ public class ImageLoader {
             image[0] = narutoSpriteSheet.getSubimage(70, 2175, 30, 52);
         } else if (type.equals("doubleJump")) {
             image = new Image[8];
-            image[0] = narutoSpriteSheet.getSubimage(0, 5768,40,52 );
+            image[0] = narutoSpriteSheet.getSubimage(0, 5768,40,52);
 //            for (int i = 1; i < 8; i++) {
 //                image[i] = rotateImage((BufferedImage)image[i - 1]);
 //            }
+        } else if (type.equals("fireRight")) {
+            image = new Image[7];
+            image[0] = narutoSpriteSheet.getSubimage(0, 2247,32,56);
+            image[1] = narutoSpriteSheet.getSubimage(37, 2247,40,56);
+            image[2] = narutoSpriteSheet.getSubimage(82, 2247,40,56);
+            image[3] = narutoSpriteSheet.getSubimage(128, 2247,40,56);
+            image[4] = narutoSpriteSheet.getSubimage(174, 2247,40,56);
+            image[5] = narutoSpriteSheet.getSubimage(220, 2247,40,56);
+            image[6] = narutoSpriteSheet.getSubimage(265, 2247,40,56);
+        } else if (type.equals("fireLeft")) {
+            image = new Image[7];
+            image[0] = narutoSpriteSheet.getSubimage(0, 2566,32,56);
+            image[1] = narutoSpriteSheet.getSubimage(37, 2566,40,56);
+            image[2] = narutoSpriteSheet.getSubimage(82, 2566,40,56);
+            image[3] = narutoSpriteSheet.getSubimage(128, 2566,40,56);
+            image[4] = narutoSpriteSheet.getSubimage(174, 2566,40,56);
+            image[5] = narutoSpriteSheet.getSubimage(220, 2566,40,56);
+            image[6] = narutoSpriteSheet.getSubimage(265, 2566,40,56);
         }
         return image;
     }
@@ -105,8 +123,8 @@ public class ImageLoader {
 
     private void loadKunais() {
         try {
-            kunaiLeft = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "t.png"));
-            kunaiRight = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "aa.png"));
+            kunaiLeft = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "kunaiLeft.png"));
+            kunaiRight = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(KUNAI_PATH + "kunaiRight.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

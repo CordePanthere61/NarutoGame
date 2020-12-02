@@ -15,32 +15,31 @@ public class Kunai extends MovableEntity {
 
     public Kunai(Player player) {
         this.player = player;
-        setSpeed(3);
+        setSpeed(6);
         disableGravity();
         setDimension(20, 9);
-        setDirection(this.player.getDirection());
+        setDirection(player.getDirection());
         if (super.getDirection() == Direction.LEFT) {
-            super.teleport(player.getX() - 3, player.getY());
+            super.teleport(player.getX() - 3, player.getY() + 28);
         } else {
-            super.teleport(player.getX() + 3, player.getY());
+            super.teleport(player.getX() + 23, player.getY() + 28);
         }
         loadFrames();
     }
 
     @Override
     public void update() {
-        super.move(player.getDirection());
-        System.out.println(height);
+        super.move(super.getDirection());
     }
 
     @Override
     public void draw(Buffer buffer) {
-//        if (super.getDirection() == Direction.LEFT) {
-//            buffer.drawImage(leftFrame, x, y);
-//        } else {
-//            buffer.drawImage(rightFrame, x, y);
-//        }
-        buffer.drawRectangle(width, height, x, y, Color.red);
+        if (super.getDirection() == Direction.LEFT) {
+            buffer.drawImage(leftFrame, x, y);
+        } else {
+            buffer.drawImage(rightFrame, x, y);
+        }
+
     }
 
     private void loadFrames() {

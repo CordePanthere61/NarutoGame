@@ -17,7 +17,7 @@ public class Player extends ControllableEntity {
 
     private GamePad gamePad;
     private Animator animator;
-
+    private int fireCooldown = 0;
 
     private boolean moveFreely = false;
 
@@ -41,7 +41,10 @@ public class Player extends ControllableEntity {
         if (gamePad.isJumpPressed()) {
             startJump();
         }
-
+        fireCooldown--;
+        if (fireCooldown <= 0) {
+            fireCooldown = 0;
+        }
         //updateDimensions();
         animator.update();
 
@@ -67,6 +70,8 @@ public class Player extends ControllableEntity {
         animator.setDownFrame(1, ImageLoader.getInstance().getPlayerFrames("down"));
         animator.setUpFrame(1, ImageLoader.getInstance().getPlayerFrames("up"));
         animator.setDoubleJumpFrames(8, ImageLoader.getInstance().getPlayerFrames("doubleJump"));
+        animator.setFireLeftFrames(7, ImageLoader.getInstance().getPlayerFrames("fireLeft"));
+        animator.setFireRightFrames(7, ImageLoader.getInstance().getPlayerFrames("fireRight"));
     }
 
     @Override
@@ -87,6 +92,12 @@ public class Player extends ControllableEntity {
 
     public Kunai fire() {
         System.out.println("fired");
+        fireCooldown = 50;
+        animator.fireAnimation();
         return new Kunai(this);
+    }
+
+    public boolean canFire() {
+        return fireCooldown == 0;
     }
 }

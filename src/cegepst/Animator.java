@@ -18,6 +18,10 @@ public class Animator {
     private Image[] downFrame;
     private Image[] upFrame;
     private Image[] doubleJumpFrames;
+    private Image[] fireLeftFrames;
+    private Image[] fireRightFrames;
+    private boolean fired = false;
+    private int fireCooldown = 0;
     private int currentAnimationFrame = 0; // idle frame (middle)
     private int nextFrame = ANIMATION_SPEED;
 
@@ -27,6 +31,7 @@ public class Animator {
 
     public void update() {
         updateCurrentAnimationFrame();
+        updateFireAnimation();
     }
 
     public void setDownFrame(int nbImages, Image[] images) {
@@ -59,8 +64,18 @@ public class Animator {
         doubleJumpFrames = images;
     }
 
+    public void setFireRightFrames(int nbImages, Image[] images) {
+        fireRightFrames = new Image[nbImages];
+        fireRightFrames = images;
+    }
+
+    public void setFireLeftFrames(int nbImages, Image[] images) {
+        fireLeftFrames = new Image[nbImages];
+        fireLeftFrames = images;
+    }
+
     public Image determineWhichFrameToDraw() {
-        if (entity.hasMoved()) {
+        if (entity.hasMoved() && !fired) {
             if (entity.getDirection() == Direction.RIGHT) {
                 return rightFrames[currentAnimationFrame];
             } else if (entity.getDirection() == Direction.LEFT) {
@@ -75,6 +90,12 @@ public class Animator {
                     return doubleJumpFrames[currentAnimationFrame];
                 }
                 return upFrame[0];
+            }
+        } else if (fired) {
+            if (entity.getDirection() == Direction.LEFT) {
+                return fireLeftFrames[currentAnimationFrame];
+            } else if (entity.getDirection() == Direction.RIGHT) {
+                return fireRightFrames[currentAnimationFrame];
             }
         } else {
             if (entity.getDirection() == Direction.RIGHT) {
@@ -93,8 +114,30 @@ public class Animator {
         return null;
     }
 
+    public void fireAnimation() {
+        fired = true;
+        fireCooldown = 20;
+    }
+
+    private void updateFireAnimation() {
+        fireCooldown--;
+        if (fireCooldown <= 0) {
+            fired = false;
+            fireCooldown = 0;
+        }
+    }
+
     private void updateCurrentAnimationFrame() {
-        if (entity.hasMoved() || entity.hasDoubleJumped()) {
+        if (fired) {
+            --nextFrame;
+            if (nextFrame == 0) {
+                ++currentAnimationFrame;
+                if (currentAnimationFrame >= fireLeftFrames.length) {
+                    currentAnimationFrame = 0;
+                }
+                nextFrame = ANIMATION_SPEED;
+            }
+        } else if (!entity.hasSpaceBelow() || entity.hasMoved()) {
             --nextFrame;
             if (nextFrame == 0) {
                 ++currentAnimationFrame;
@@ -103,7 +146,7 @@ public class Animator {
                 }
                 nextFrame = ANIMATION_SPEED;
             }
-        } else{
+        } else {
             currentAnimationFrame = 0;
         }
     }
