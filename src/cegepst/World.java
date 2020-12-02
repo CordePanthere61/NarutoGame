@@ -1,5 +1,6 @@
 package cegepst;
 
+import cegepst.engine.controls.Direction;
 import cegepst.engine.controls.MovementController;
 import cegepst.engine.entity.ControllableEntity;
 import cegepst.engine.graphics.Buffer;
@@ -28,9 +29,12 @@ public class World extends ControllableEntity {
     public void update() {
         super.update();
         if (!touchedBound) {
+            System.out.println("Touche pu");
             moveOppositeToHandler();
+        } else {
+            System.out.println("Touche");
         }
-//        System.out.println("X : " + x + " Y : " + y);
+        System.out.println("X : " + x + " Y : " + y);
     }
 
     @Override

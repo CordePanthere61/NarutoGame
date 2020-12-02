@@ -21,7 +21,7 @@ public class Animator {
     private Image[] fireLeftFrames;
     private Image[] fireRightFrames;
     private boolean fired = false;
-    private int fireCooldown = 0;
+    //private int fireCooldown = 0;
     private int currentAnimationFrame = 0; // idle frame (middle)
     private int nextFrame = ANIMATION_SPEED;
 
@@ -31,7 +31,7 @@ public class Animator {
 
     public void update() {
         updateCurrentAnimationFrame();
-        updateFireAnimation();
+        //updateFireAnimation();
     }
 
     public void setDownFrame(int nbImages, Image[] images) {
@@ -116,16 +116,17 @@ public class Animator {
 
     public void fireAnimation() {
         fired = true;
-        fireCooldown = 20;
+        //fireCooldown = 20;
+        currentAnimationFrame = 0;
     }
 
-    private void updateFireAnimation() {
+    /*private void updateFireAnimation() {
         fireCooldown--;
         if (fireCooldown <= 0) {
             fired = false;
             fireCooldown = 0;
         }
-    }
+    }*/
 
     private void updateCurrentAnimationFrame() {
         if (fired) {
@@ -134,6 +135,7 @@ public class Animator {
                 ++currentAnimationFrame;
                 if (currentAnimationFrame >= fireLeftFrames.length) {
                     currentAnimationFrame = 0;
+                    fired = false;
                 }
                 nextFrame = ANIMATION_SPEED;
             }
