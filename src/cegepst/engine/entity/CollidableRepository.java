@@ -29,6 +29,13 @@ public class CollidableRepository implements Iterable<StaticEntity> {
         registeredCollidableEntities.remove(entity);
     }
 
+    public boolean containsSelf(StaticEntity entity) {
+        if (registeredCollidableEntities.contains(entity)) {
+            return true;
+        }
+        return false;
+    }
+
     public int count() {
         return registeredCollidableEntities.size();
     }

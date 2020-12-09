@@ -1,5 +1,6 @@
 package cegepst.engine.entity;
 
+import cegepst.Animator;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.controls.Direction;
 
@@ -7,6 +8,7 @@ import java.awt.*;
 
 public abstract class MovableEntity extends UpdatableEntity {
 
+    protected Animator animator;
     private final Collision collision;
     protected Gravity gravity;
     private Direction direction = Direction.RIGHT;
@@ -14,6 +16,7 @@ public abstract class MovableEntity extends UpdatableEntity {
     private boolean moved;
     private boolean doubleJumped = false;
     private boolean gravityEnabled = true;
+    protected boolean deleted = false;
     private int jumpCooldown;
     private int lastX;
     private int lastY;
@@ -22,27 +25,33 @@ public abstract class MovableEntity extends UpdatableEntity {
     public MovableEntity() {
         collision = new Collision(this);
         gravity = new Gravity(this, collision);
+        animator = new Animator(this);
     }
 
     @Override
     public void update() { // done first before any other action
-        if (gravityEnabled) {
-            gravity.update();
+        if (!deleted) {
+            if (gravityEnabled) {
+                gravity.update();
+            }
+            if (!hasSpaceBelow() && doubleJumped) {
+                doubleJumped = false;
+            }
+            moved = (x != lastX || y != lastY);
+            lastX = x;
+            lastY = y;
+            jumpCooldown--;
+            if (jumpCooldown < 0) {
+                jumpCooldown = 0;
+            }
+            //System.out.println(doubleJumped);
         }
-        if (!hasSpaceBelow() && doubleJumped) {
-            doubleJumped = false;
-        }
-        moved = (x != lastX || y != lastY);
-        lastX = x;
-        lastY = y;
-        jumpCooldown--;
-        if (jumpCooldown < 0) {
-            jumpCooldown = 0;
-        }
-        //System.out.println(doubleJumped);
+
     }
 
-
+    public void resetSpeed() {
+        setSpeed(this.getSpeed());
+    }
 
     public void startJump() {
 
@@ -50,12 +59,20 @@ public abstract class MovableEntity extends UpdatableEntity {
             gravity.jump();
             //System.out.println("double jumped");
             doubleJumped = true;
+            animator.doubleJumpAnimation();
         } else if (!hasSpaceBelow()) {
             //System.out.println("jumped");
             gravity.jump();
             jumpCooldown = 30;
         }
 
+    }
+
+    public void delete() {
+        deleted = true;
+        if (CollidableRepository.getInstance().containsSelf(this)) {
+            CollidableRepository.getInstance().unregisterEntity(this);
+        }
     }
 
     public void disableGravity() {
@@ -104,6 +121,18 @@ public abstract class MovableEntity extends UpdatableEntity {
 
     public boolean hasMoved() {
         return moved;
+    }
+
+    public Direction getLastDirection() {
+        if (lastX < x) {
+            return Direction.RIGHT;
+        } else {
+            return Direction.LEFT;
+        }
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean hasDoubleJumped() {

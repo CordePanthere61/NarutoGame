@@ -10,7 +10,9 @@ import java.awt.*;
 
 public class Blockade extends MovableEntity {
 
-    public Blockade() {
+    public Blockade(int x, int y, int width, int height) {
+        this.teleport(x, y);
+        this.setDimension(width, height);
         super.disableGravity();
         CollidableRepository.getInstance().registerEntity(this);
     }
@@ -22,7 +24,6 @@ public class Blockade extends MovableEntity {
 
     @Override
     public void draw(Buffer buffer) {
-            buffer.drawRectangle(x, y, width, height,
-                    new Color(255, 0, 0, 100));
+
     }
 }

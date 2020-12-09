@@ -10,7 +10,7 @@ public class Gravity {
     private final int MID_AIR_SPEED = 5;
     private double fallingSpeed = 1; // falling speed;
     private double jumpSpeed = 4;
-    private int jumpMaxHeight = 30; // jumping max
+    private int jumpMaxHeight = 23; // jumping max
     private int currentJumpMeter = 0;
 
     private boolean jumping;

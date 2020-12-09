@@ -1,61 +1,81 @@
 package cegepst.player;
 
-import cegepst.Animator;
-import cegepst.GamePad;
-import cegepst.ImageLoader;
-import cegepst.Kunai;
+import cegepst.*;
+import cegepst.engine.entity.CollidableRepository;
+import cegepst.engine.entity.MovableEntity;
 import cegepst.engine.graphics.Buffer;
-import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.ControllableEntity;
 
-import java.awt.*;
-import java.util.ArrayList;
 
 public class Player extends ControllableEntity {
 
 
 
     private GamePad gamePad;
-    private Animator animator;
+    private Hud hud;
     private int fireCooldown = 0;
+    private int nbDeaths = 0;
+    private boolean killed = false;
+    private Log log;
 
     private boolean moveFreely = false;
 
     public Player(GamePad controller) {
         super(controller);
         this.gamePad = controller;
-        animator = new Animator(this);
-
+        this.hud = new Hud();
         setSpeed(5);
         setDimension(20,56);
-        teleport(120,100);
+        teleport(200,450);
+        animator.setAnimationSpeed(4);
         loadAnimatorFrames();
+        CollidableRepository.getInstance().registerEntity(this);
     }
 
-    @Override
-    public void update() {
+    public void update(World world) {
         super.update();
-        if (moveFreely) {
+        super.animator.update();
+        if (moveFreely && (x >= 0 || x <= 800)) {
             moveAccordingToHandler();
+        }
+        if (killed && animator.logAnimationFinished()) {
+            teleport(x, -25);
+            killed = false;
+        }
+        if (x <= 0) {
+            x = 1;
+        } else if (x >= 800) {
+            x = 799;
+        }
+        if (y >= 600) {
+            if (!killed) {
+                this.kill();
+            }
+        }
+
+        if (log != null) {
+            log.update();
+        }
+        if (gamePad.isFireKeyPressed() && canFire()) {
+            world.addKunais(fire());
         }
         if (gamePad.isJumpPressed()) {
             startJump();
         }
+
         fireCooldown--;
         if (fireCooldown <= 0) {
             fireCooldown = 0;
         }
-        //updateDimensions();
-        animator.update();
-
-        //System.out.println("X : " + x + " Y : " + y);
-
     }
 
     @Override
     public void draw(Buffer buffer) {
-        buffer.drawImage(animator.determineWhichFrameToDraw(), x, y);
-
+        buffer.drawImage(super.animator.determineWhichFrameToDraw(), x, y);
+        hud.draw(buffer);
+        if (log != null) {
+            log.draw(buffer);
+        }
         //drawHitBox(buffer);
     }
 
@@ -64,14 +84,15 @@ public class Player extends ControllableEntity {
     }
 
     public void loadAnimatorFrames() {
-        animator.setLeftFrames(8, ImageLoader.getInstance().getPlayerFrames("left"));
-        animator.setRightFrames(8, ImageLoader.getInstance().getPlayerFrames("right"));
-        animator.setIdleFrames(2, ImageLoader.getInstance().getPlayerFrames("idle"));
-        animator.setDownFrame(1, ImageLoader.getInstance().getPlayerFrames("down"));
-        animator.setUpFrame(1, ImageLoader.getInstance().getPlayerFrames("up"));
-        animator.setDoubleJumpFrames(8, ImageLoader.getInstance().getPlayerFrames("doubleJump"));
-        animator.setFireLeftFrames(7, ImageLoader.getInstance().getPlayerFrames("fireLeft"));
-        animator.setFireRightFrames(7, ImageLoader.getInstance().getPlayerFrames("fireRight"));
+        super.animator.setLeftFrames(8, ImageLoader.getInstance().getPlayerFrames("left"));
+        super.animator.setRightFrames(8, ImageLoader.getInstance().getPlayerFrames("right"));
+        super.animator.setIdleFrames(2, ImageLoader.getInstance().getPlayerFrames("idle"));
+        super.animator.setDownFrame(1, ImageLoader.getInstance().getPlayerFrames("down"));
+        super.animator.setUpFrame(1, ImageLoader.getInstance().getPlayerFrames("up"));
+        super.animator.setDoubleJumpFrames(4, ImageLoader.getInstance().getPlayerFrames("doubleJump"));
+        super.animator.setFireLeftFrames(7, ImageLoader.getInstance().getPlayerFrames("fireLeft"));
+        super.animator.setFireRightFrames(7, ImageLoader.getInstance().getPlayerFrames("fireRight"));
+        super.animator.setLogAnimationFrames(5, ImageLoader.getInstance().getPlayerFrames("log"));
     }
 
     @Override
@@ -79,25 +100,25 @@ public class Player extends ControllableEntity {
         return gamePad.isMovementKeyPressed();
     }
 
-    //    private void updateDimensions() {
-//        if (hasMoved()) {
-//            if (super.getDirection() == Direction.UP) {
-//                super.setDimension(30,56);
-//            }
-//            super.setDimension(20,56);
-//        } else {
-//            super.setDimension(20,56);
-//        }
-//    }
-
     public Kunai fire() {
-        System.out.println("fired");
         fireCooldown = 50;
-        animator.fireAnimation();
+        super.animator.fireAnimation();
         return new Kunai(this);
     }
 
+    public void kill() {
+        animator.logAnimation();
+        log = new Log(x, y);
+        hud.reduceLog();
+        nbDeaths++;
+        killed = true;
+    }
+
+    public boolean isAlive() {
+        return nbDeaths < 3;
+    }
+
     public boolean canFire() {
-        return fireCooldown == 0;
+        return fireCooldown == 0 && animator.logAnimationFinished();
     }
 }

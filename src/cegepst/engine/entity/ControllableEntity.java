@@ -23,6 +23,8 @@ public abstract class ControllableEntity extends MovableEntity {
             super.setDirection(Direction.RIGHT);
         } else if (controller.isLeftPressed()) {
             super.setDirection(Direction.LEFT);
+        } else if (super.getDirection() == Direction.DOWN && !hasSpaceBelow()) {
+            super.setDirection(Direction.RIGHT);
         }
     }
 

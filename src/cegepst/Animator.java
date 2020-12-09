@@ -1,9 +1,7 @@
 package cegepst;
 
 import cegepst.engine.controls.Direction;
-import cegepst.engine.entity.ControllableEntity;
 import cegepst.engine.entity.MovableEntity;
-import cegepst.player.Player;
 
 import java.awt.*;
 
@@ -11,7 +9,10 @@ public class Animator {
 
     private MovableEntity entity;
 
-    private static final int ANIMATION_SPEED = 4;
+
+    private static final int FIRE_ANIMATION_SPEED = 6;
+    private static final int DOUBLE_JUMP_ANIMATION_SPEED = 12;
+    private static final int LOG_ANIMATION_SPEED = 10;
     private Image[] leftFrames;
     private Image[] rightFrames;
     private Image[] idleFrames;
@@ -20,10 +21,19 @@ public class Animator {
     private Image[] doubleJumpFrames;
     private Image[] fireLeftFrames;
     private Image[] fireRightFrames;
+    private Image[] deadAnimationFrames;
+    private Image[] meleeAttackLeftFrames;
+    private Image[] meleeAttackRightFrames;
+    private Image[] logAnimationFrames;
     private boolean fired = false;
-    //private int fireCooldown = 0;
+    private boolean doubleJumped = false;
+    private boolean deadAnimation = false;
+    private boolean meleeAttackAnimation = false;
+    private boolean logAnimation = false;
     private int currentAnimationFrame = 0; // idle frame (middle)
-    private int nextFrame = ANIMATION_SPEED;
+    private int animationSpeed = 4;
+    private int nextFrame = animationSpeed;
+
 
     public Animator(MovableEntity entity) {
         this.entity = entity;
@@ -31,6 +41,9 @@ public class Animator {
 
     public void update() {
         updateCurrentAnimationFrame();
+        if (entity.isDeleted()) {
+            deadAnimation();
+        }
         //updateFireAnimation();
     }
 
@@ -74,21 +87,44 @@ public class Animator {
         fireLeftFrames = images;
     }
 
+    public void setAnimationSpeed(int speed) {
+        this.animationSpeed = speed;
+    }
+
+    public void setLeftMeleeAttackFrames(int nbImages, Image[] images) {
+        meleeAttackLeftFrames = new Image[nbImages];
+        meleeAttackLeftFrames = images;
+    }
+
+    public void setRightMeleeAttackFrames(int nbImages, Image[] images) {
+        meleeAttackRightFrames = new Image[nbImages];
+        meleeAttackRightFrames = images;
+    }
+
+    public void setLogAnimationFrames(int nbImages, Image[] images) {
+        logAnimationFrames = new Image[nbImages];
+        logAnimationFrames = images;
+    }
+
     public Image determineWhichFrameToDraw() {
-        if (entity.hasMoved() && !fired) {
+        if (logAnimation) {
+            return logAnimationFrames[currentAnimationFrame];
+        } else if (meleeAttackAnimation) {
+            if (entity.getDirection() == Direction.LEFT) {
+                return meleeAttackLeftFrames[currentAnimationFrame];
+            } else {
+                return meleeAttackRightFrames[currentAnimationFrame];
+            }
+        } else if (doubleJumped) {
+            return doubleJumpFrames[currentAnimationFrame];
+        } else if (entity.hasMoved() && !fired) {
             if (entity.getDirection() == Direction.RIGHT) {
                 return rightFrames[currentAnimationFrame];
             } else if (entity.getDirection() == Direction.LEFT) {
                 return leftFrames[currentAnimationFrame];
             } else if (entity.getDirection() == Direction.DOWN) {
-                if (entity.hasDoubleJumped()) {
-                    return doubleJumpFrames[currentAnimationFrame];
-                }
                 return downFrame[0];
             } else if (entity.getDirection() == Direction.UP) {
-                if (entity.hasDoubleJumped()) {
-                    return doubleJumpFrames[currentAnimationFrame];
-                }
                 return upFrame[0];
             }
         } else if (fired) {
@@ -103,10 +139,7 @@ public class Animator {
             } else if (entity.getDirection() == Direction.LEFT) {
                 return idleFrames[1];
             } else if (entity.getDirection() == Direction.DOWN) {
-                if (entity.hasDoubleJumped()) {
-                    return doubleJumpFrames[currentAnimationFrame];
-                }
-                return idleFrames[0];
+                return downFrame[0];
             } else if (entity.getDirection() == Direction.UP) {
                 return upFrame[0];
             }
@@ -116,20 +149,62 @@ public class Animator {
 
     public void fireAnimation() {
         fired = true;
-        //fireCooldown = 20;
         currentAnimationFrame = 0;
     }
 
-    /*private void updateFireAnimation() {
-        fireCooldown--;
-        if (fireCooldown <= 0) {
-            fired = false;
-            fireCooldown = 0;
-        }
-    }*/
+    public void doubleJumpAnimation() {
+        doubleJumped = true;
+        currentAnimationFrame = 0;
+    }
+
+    public void deadAnimation() {
+        deadAnimation = true;
+    }
+
+    public boolean isDeadAnimationFinished() {
+        return deadAnimation;
+    }
+
+    public boolean logAnimationFinished() {
+        return !logAnimation;
+    }
+
+    public void meleeAttack() {
+        meleeAttackAnimation = true;
+        currentAnimationFrame = 0;
+    }
+
+    public void logAnimation() {
+        logAnimation = true;
+        currentAnimationFrame = 0;
+    }
+
+    public boolean meleeAttackFinished() {
+        return !meleeAttackAnimation;
+    }
 
     private void updateCurrentAnimationFrame() {
-        if (fired) {
+        if (logAnimation) {
+            --nextFrame;
+            if (nextFrame == 0) {
+                ++currentAnimationFrame;
+                if (currentAnimationFrame >= logAnimationFrames.length) {
+                    currentAnimationFrame = 0;
+                    logAnimation = false;
+                }
+                nextFrame = LOG_ANIMATION_SPEED;
+            }
+        } else if (meleeAttackAnimation) {
+            --nextFrame;
+            if (nextFrame == 0) {
+                ++currentAnimationFrame;
+                if (currentAnimationFrame >= meleeAttackRightFrames.length) {
+                    currentAnimationFrame = 0;
+                    meleeAttackAnimation = false;
+                }
+                nextFrame = FIRE_ANIMATION_SPEED;
+            }
+        } else if (fired) {
             --nextFrame;
             if (nextFrame == 0) {
                 ++currentAnimationFrame;
@@ -137,7 +212,17 @@ public class Animator {
                     currentAnimationFrame = 0;
                     fired = false;
                 }
-                nextFrame = ANIMATION_SPEED;
+                nextFrame = FIRE_ANIMATION_SPEED;
+            }
+        } else if (doubleJumped) {
+            --nextFrame;
+            if (nextFrame == 0) {
+                ++currentAnimationFrame;
+                if (currentAnimationFrame >= doubleJumpFrames.length) {
+                    currentAnimationFrame = 0;
+                    doubleJumped = false;
+                }
+                nextFrame = DOUBLE_JUMP_ANIMATION_SPEED;
             }
         } else if (!entity.hasSpaceBelow() || entity.hasMoved()) {
             --nextFrame;
@@ -146,7 +231,7 @@ public class Animator {
                 if (currentAnimationFrame >= leftFrames.length) {
                     currentAnimationFrame = 0;
                 }
-                nextFrame = ANIMATION_SPEED;
+                nextFrame = animationSpeed;
             }
         } else {
             currentAnimationFrame = 0;
