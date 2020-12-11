@@ -17,16 +17,16 @@ public class EnemyLoader {
     }
 
     public void createEnemies(Player player) {
-//        enemies.add(new Kakashi(player, 470, 450));
-//        enemies.add(new Deidara(player, 1015, 450));
-//        enemies.add(new Kakashi(player, 1455, 450));
-//        enemies.add(new Deidara(player, 1785, 400));
-//        enemies.add(new Kakashi(player, 2405, 350));
-//        enemies.add(new Deidara(player, 3000,350));
-//        enemies.add(new Deidara(player, 3445,500));
-//        enemies.add(new Kakashi(player, 3900,470));
-//        enemies.add(new Kakashi(player, 4630,350));
-//        enemies.add(new Deidara(player, 5400,390));
+        enemies.add(new Kakashi(player, 470, 450));
+        enemies.add(new Deidara(player, 1015, 450));
+        enemies.add(new Kakashi(player, 1455, 450));
+        enemies.add(new Deidara(player, 1785, 400));
+        enemies.add(new Kakashi(player, 2405, 350));
+        enemies.add(new Deidara(player, 3000,350));
+        enemies.add(new Deidara(player, 3445,500));
+        enemies.add(new Kakashi(player, 3900,470));
+        enemies.add(new Kakashi(player, 4630,350));
+        enemies.add(new Deidara(player, 5400,390));
     }
 
     public void addEnemiesAsEnemies(ArrayList<Enemy> entities) {

@@ -3,10 +3,8 @@ package cegepst;
 
 import cegepst.engine.entity.CollidableRepository;
 import cegepst.engine.entity.MovableEntity;
-import cegepst.engine.entity.StaticEntity;
 import cegepst.engine.graphics.Buffer;
 
-import java.awt.*;
 
 public class Blockade extends MovableEntity {
 

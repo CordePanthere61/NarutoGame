@@ -1,14 +1,12 @@
 package cegepst.enemies;
 
 import cegepst.Kunai;
-import cegepst.World;
 import cegepst.engine.controls.Direction;
 import cegepst.engine.entity.CollidableRepository;
 import cegepst.engine.entity.MovableEntity;
 import cegepst.engine.graphics.Buffer;
 import cegepst.player.Player;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 

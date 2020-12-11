@@ -1,13 +1,10 @@
 package cegepst;
 
-import cegepst.Blockade;
-import cegepst.World;
 import cegepst.engine.controls.MovementController;
 import cegepst.engine.entity.ControllableEntity;
 import cegepst.engine.graphics.Buffer;
 import cegepst.player.Player;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Camera extends ControllableEntity {
@@ -24,7 +21,6 @@ public class Camera extends ControllableEntity {
         super.teleport(0,0);
         this.world = world;
         this.player = player;
-        //setBorders();
     }
 
     @Override

@@ -1,8 +1,6 @@
 package cegepst;
 
-import cegepst.enemies.Deidara;
 import cegepst.enemies.Enemy;
-import cegepst.enemies.Kakashi;
 import cegepst.engine.controls.MovementController;
 import cegepst.engine.entity.ControllableEntity;
 import cegepst.engine.entity.MovableEntity;

@@ -1,9 +1,7 @@
 package cegepst;
 
 import cegepst.engine.entity.StaticEntity;
-import cegepst.engine.entity.UpdatableEntity;
 import cegepst.engine.graphics.Buffer;
-import cegepst.player.Player;
 
 import java.awt.*;
 

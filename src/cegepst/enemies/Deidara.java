@@ -2,11 +2,8 @@ package cegepst.enemies;
 
 import cegepst.ImageLoader;
 import cegepst.Kunai;
-import cegepst.World;
-import cegepst.engine.graphics.Buffer;
 import cegepst.player.Player;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 
