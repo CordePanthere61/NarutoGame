@@ -1,8 +1,8 @@
 package cegepst.player;
 
 import cegepst.*;
+import cegepst.engine.Sound;
 import cegepst.engine.entity.CollidableRepository;
-import cegepst.engine.entity.MovableEntity;
 import cegepst.engine.graphics.Buffer;
 import cegepst.engine.entity.ControllableEntity;
 
@@ -107,11 +107,16 @@ public class Player extends ControllableEntity {
     }
 
     public void kill() {
+        Sound.play("sounds/mob.wav");
         animator.logAnimation();
         log = new Log(x, y);
         hud.reduceLog();
         nbDeaths++;
         killed = true;
+    }
+
+    public boolean hasWon() {
+        return x >= 799;
     }
 
     public boolean isAlive() {

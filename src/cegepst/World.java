@@ -16,7 +16,6 @@ public class World extends ControllableEntity {
 
     private Image background;
     private boolean touchedBound;
-    private Blockade ground;
     private Player player;
     private BlockadeLoader blockadeLoader;
     private EnemyLoader enemyLoader;
@@ -41,14 +40,13 @@ public class World extends ControllableEntity {
         loadBackground();
         loadBlockades();
         loadEnemies();
-        //ground  = new Blockade(0, 560, width, 20);
     }
 
     @Override
     public void update() {
         super.update();
-        moveEntities();
         updateKunais();
+        moveEntities();
         updateEnemies();
 
     }
@@ -63,7 +61,6 @@ public class World extends ControllableEntity {
         for (Kunai kunai : kunais) {
             kunai.draw(buffer);
         }
-        //ground.draw(buffer);
     }
 
     public void updateKunais() {

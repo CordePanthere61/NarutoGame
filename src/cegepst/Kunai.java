@@ -13,10 +13,8 @@ public class Kunai extends MovableEntity {
 
     private Image leftFrame;
     private Image rightFrame;
-    private MovableEntity player;
 
     public Kunai(MovableEntity player) {
-        this.player = player;
         setSpeed(6);
         disableGravity();
         setDimension(20, 9);
@@ -31,7 +29,6 @@ public class Kunai extends MovableEntity {
 
     @Override
     public void update() {
-        super.update();
         super.move(super.getDirection());
 
     }
